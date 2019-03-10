@@ -1,0 +1,118 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Strata Conference SF 2019 : Tensorflow Serving Basics</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab title="Strata Conference SF 2019 : Tensorflow Serving Basics"
+                  environment="web"
+                  feedback-link="github.com/mariopce">
+    
+      <google-codelab-step label="Overview of the tutorial" duration="1">
+        <p>This tutorial shows you how to use Tensorflow serving to serve machine learning / deep learning models. In this tutorial you will do the following:</p>
+<ul>
+<li>Build a simple neural network using Tensorflow and Keras</li>
+<li>Train the model</li>
+<li>Export the model</li>
+<li>Serve the model using Tensorflow Serving</li>
+<li>Make predictions using deployed model</li>
+</ul>
+<p>Prerequesites</p>
+<ul>
+<li>Google Cloud Account to run on cloud</li>
+<li>Docker installed to run on local machine along with Python envionrment</li>
+</ul>
+<p>We recommend you to have npm and Node.js already installed on your machine to quickly boot up a http server.</p>
+<aside class="warning"><p>You can create a free GCP account with $300 credit. It would be sufficient for the purpose of this tutorial.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Train &amp; Save the model" duration="0">
+        <pre><code>python model.py
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Inspect the model" duration="0">
+        <pre><code>pip install tensorflow-serving-api
+</code></pre>
+<pre><code>saved_model_cli show --dir output/* --all
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Pull the Tensorflow Serving Image" duration="0">
+        <pre><code>docker pull tensorflow/serving
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Run Tensorflow Server with our model" duration="0">
+        <pre><code>docker run -it --rm -p 8501:8501  -v &#34;$PWD&#34;/output:/models/test -e MODEL_NAME=test tensorflow/serving
+
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Test the Predictions using Curl" duration="0">
+        <pre><code>curl -d &#39;{&#34;instances&#34;: [{ &#34;input_number&#34; : [10.0] },{ &#34;input_number&#34; : [20.0] }]}&#39; \
+  -X POST http://localhost:8501/v1/models/test:predict
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Optimizing Models" duration="0">
+        <p>Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA</p>
+<p>Building the TensorFlow Serving development image</p>
+<pre><code>docker build -t $USER/tensorflow-serving-devel -f Dockerfile.devel https://github.com/tensorflow/serving.git#:tensorflow_serving/tools/docker
+</code></pre>
+<p>build a new serving image with our optimized binary and call it $USER/tensorflow-serving</p>
+<pre><code>docker build -t $USER/tensorflow-serving \
+--build-arg TF_SERVING_BUILD_IMAGE=$USER/tensorflow-serving-devel \ https://github.com/tensorflow/serving.git#:tensorflow_serving/tools/docker
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Nice Reads:" duration="0">
+        <p>Further optimizing for the CPU :</p>
+<ul>
+<li>https://medium.com/tensorflow/serving-ml-quickly-with-tensorflow-serving-and-docker-7df7094aa008</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

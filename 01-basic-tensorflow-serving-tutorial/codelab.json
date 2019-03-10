@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "source": "01-basic-tensorflow-serving-tutorial.md",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2019-03-10T11:53:31+05:30",
+  "id": "01-basic-tensorflow-serving-tutorial",
+  "duration": 1,
+  "title": "Strata Conference SF 2019 : Tensorflow Serving Basics",
+  "author": "Abhishek Kumar",
+  "summary": "Deep Learning with Productiion",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "sdk"
+  ],
+  "tags": [
+    "android"
+  ],
+  "feedback": "github.com/mariopce",
+  "ga": "0",
+  "url": "01-basic-tensorflow-serving-tutorial"
+}
