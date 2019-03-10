@@ -26,28 +26,38 @@
                   feedback-link="github.com/mariopce">
     
       <google-codelab-step label="Overview of the tutorial" duration="1">
-        <p>This tutorial shows you how to use Tensorflow serving to serve machine learning / deep learning models. In this tutorial you will do the following:</p>
+        <p>In this tutorial, You will learn to use <a href="https://www.tensorflow.org/tfx/guide/serving" target="_blank">Tensorflow Serving</a>.TensorFlow Serving is a flexible, high-performance serving system for machine learning models, designed for production environments.</p>
+<p><strong>What You&#39;ll Learn</strong></p>
 <ul>
-<li>Build a simple neural network using Tensorflow and Keras</li>
-<li>Train the model</li>
-<li>Export the model</li>
-<li>Serve the model using Tensorflow Serving</li>
-<li>Make predictions using deployed model</li>
+<li>How to build a simple neural network using Tensorflow and Keras</li>
+<li>How to export the model for serving</li>
+<li>How to serve the model using Tensorflow Serving</li>
+<li>How to make predictions using deployed model</li>
 </ul>
-<p>Prerequesites</p>
+<p><strong>What You&#39;ll Need</strong></p>
 <ul>
-<li>Google Cloud Account to run on cloud</li>
-<li>Docker installed to run on local machine along with Python envionrment</li>
+<li>An active <a href="https://cloud.google.com/resource-manager/docs/creating-managing-projects" target="_blank">GCP project</a></li>
+<li>Access to the Google Cloud Shell, available in the <a href="https://console.cloud.google.com/home/dashboard" target="_blank">Google Cloud Console</a></li>
+<li>If you&#39;d prefer to complete the codelab on a local machine, you&#39;ll need to have <a href="https://cloud.google.com/sdk/gcloud/" target="_blank">gcloud</a>, <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#download-as-part-of-the-google-cloud-sdk" target="_blank">kubectl</a>, and <a href="https://www.docker.com/community-edition" target="_blank">docker</a> installed</li>
 </ul>
-<p>We recommend you to have npm and Node.js already installed on your machine to quickly boot up a http server.</p>
 <aside class="warning"><p>You can create a free GCP account with $300 credit. It would be sufficient for the purpose of this tutorial.</p>
 </aside>
 
 
       </google-codelab-step>
     
+      <google-codelab-step label="Getting Started" duration="0">
+        <p><strong>Downloading the Project Files</strong></p>
+<p>The first step is to download a copy of the repository created for the tutorial. This codelab can be completed on a local machine, or through Google Cloud Shell ( Recommended):</p>
+<p><a href="http://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/meabhishekkumar/deep-learning-production&page=editor" target="_blank">Download in Google Cloud Shell</a><a href="https://github.com/meabhishekkumar/deep-learning-production/archive/master.zip" target="_blank">Download locally</a></p>
+
+
+      </google-codelab-step>
+    
       <google-codelab-step label="Train &amp; Save the model" duration="0">
-        <pre><code>python model.py
+        <p>Get the code</p>
+<p>In this tutorial, we are creating a very simple model as the core objective it learn about Tensorflow serving.</p>
+<pre><code>python model.py
 </code></pre>
 
 
