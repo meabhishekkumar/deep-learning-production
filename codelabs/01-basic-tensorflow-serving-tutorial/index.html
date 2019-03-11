@@ -54,36 +54,61 @@
 <h2>Enabling Boost Mode (Cloud Shell Only)</h2>
 <p>If you are running this codelab out of Cloud Shell, you can enable Boost Mode.It can be enabled through the settings dropdown.</p>
 <p><img alt="enable_boost_mode" src="img/543a85501094e43b.png"></p>
+<h2>Navigate to Code</h2>
+<p>Code for this tutorial is available in the <code>01-basic-tensorflow-serving</code> subfolder inside <code>code</code> folder. Let&#39;s navigate to the folder.</p>
+<pre><code>$ cd code/01-basic-tensorflow-serving/
+</code></pre>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Train &amp; Save the model" duration="0">
+      <google-codelab-step label="Training &amp; Exporting the model" duration="0">
         <p>In this tutorial, we are creating a very simple model as the core objective is to learn about Tensorflow serving.</p>
-<pre><code>python model.py
+<pre><code>$ python model.py
+</code></pre>
+<p>Here is the code snippet used to build and train the model.</p>
+<pre><code>### dataset : input and output
+xs = np.array([-1,0,1,2,3,4], dtype=np.float)
+ys = np.array([-3,-1,1,3,5,7], dtype=np.float)
+
+### create simple model 
+model = tf.keras.Sequential([tf.keras.layers.Dense(units=1, input_shape=[1])])
+model.compile(optimizer=&#39;sgd&#39;,loss=&#39;mean_squared_error&#39;)
+
+### train the model
+model.fit(xs, ys, epochs=FLAGS.training_iteration)
+print(&#34;trained the model&#34;)
+
+</code></pre>
+<p>Here is the code snippet used to export the model.</p>
+<pre><code># export the model
+with tf.keras.backend.get_session() as sess:
+    tf.saved_model.simple_save(
+        sess,
+        export_path,
+        inputs={&#39;input_number&#39;: model.input},
+        outputs={t.name:t for t in model.outputs})
+</code></pre>
+<p>Once you run the script the trained model will be saved in subfloder inside <code>output</code> folder.</p>
+<h2>Inspect the model</h2>
+<p>You can inspect the model prediction signature using <code>saved_model_cli_show</code> command line utility.</p>
+<pre><code>$ saved_model_cli show --dir output/* --all
+</code></pre>
+<p>if above command is not working for you, you can run the following command to install the utility.</p>
+<pre><code>$ pip install tensorflow-serving-api
 </code></pre>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Inspect the model" duration="0">
-        <pre><code>pip install tensorflow-serving-api
+      <google-codelab-step label="Serving Model using TF Serving" duration="0">
+        <h2>Pull the Tensorflow Serving Image</h2>
+<p>In order to serve the model using Tensorflow Serving, we can directly use available official docker image <code>tensorflow/serving</code>.</p>
+<pre><code>$ docker pull tensorflow/serving
 </code></pre>
-<pre><code>saved_model_cli show --dir output/* --all
-</code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Pull the Tensorflow Serving Image" duration="0">
-        <pre><code>docker pull tensorflow/serving
-</code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Run Tensorflow Server with our model" duration="0">
-        <pre><code>docker run -it --rm -p 8501:8501  -v &#34;$PWD&#34;/output:/models/test -e MODEL_NAME=test tensorflow/serving
+<p>This may take sometime. You can test if the image is downloaded using <code>docker images</code> command.</p>
+<h2>Run Tensorflow Server with our model</h2>
+<pre><code>$ docker run -it --rm -p 8501:8501  -v &#34;$PWD&#34;/output:/models/test -e MODEL_NAME=test tensorflow/serving
 
 </code></pre>
 
@@ -91,31 +116,28 @@
       </google-codelab-step>
     
       <google-codelab-step label="Test the Predictions using Curl" duration="0">
-        <pre><code>curl -d &#39;{&#34;instances&#34;: [{ &#34;input_number&#34; : [10.0] },{ &#34;input_number&#34; : [20.0] }]}&#39; \
+        <p>You can use <code>curl</code> to test the prediction directly from command line. In actual scenario, the model would be called from UI or another intermediate layers.</p>
+<pre><code>curl -d &#39;{&#34;instances&#34;: [{ &#34;input_number&#34; : [10.0] },{ &#34;input_number&#34; : [20.0] }]}&#39; \
   -X POST http://localhost:8501/v1/models/test:predict
 </code></pre>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Optimizing Models" duration="0">
-        <p>Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA</p>
-<p>Building the TensorFlow Serving development image</p>
+      <google-codelab-step label="Optimizing TF Serving" duration="0">
+        <p>If Model latency is one of the primary concern for you. You can further optimize Tensorflow server.</p>
+<p>You may get following message while running the Tensorflow Server.</p>
+<p><code>Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA</code></p>
+<p>In order to fix this, you can build you own the TensorFlow Serving image. First you need to build a development image using the following command.</p>
 <pre><code>docker build -t $USER/tensorflow-serving-devel -f Dockerfile.devel https://github.com/tensorflow/serving.git#:tensorflow_serving/tools/docker
 </code></pre>
-<p>build a new serving image with our optimized binary and call it $USER/tensorflow-serving</p>
+<p>Then you can build a new serving image with our optimized binary and call it <code>$USER/tensorflow-serving</code></p>
 <pre><code>docker build -t $USER/tensorflow-serving \
 --build-arg TF_SERVING_BUILD_IMAGE=$USER/tensorflow-serving-devel \ https://github.com/tensorflow/serving.git#:tensorflow_serving/tools/docker
 </code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Nice Reads:" duration="0">
-        <p>Further optimizing for the CPU :</p>
-<ul>
-<li>https://medium.com/tensorflow/serving-ml-quickly-with-tensorflow-serving-and-docker-7df7094aa008</li>
-</ul>
+<p>Now you can use this newly created serving image to run the tensorflow server.</p>
+<pre><code>$ docker run -it --rm -p 8501:8501  -v &#34;$PWD&#34;/output:/models/test -e MODEL_NAME=test $USER/tensorflow-serving
+</code></pre>
 
 
       </google-codelab-step>
