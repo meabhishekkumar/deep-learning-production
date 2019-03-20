@@ -4,6 +4,6 @@ We will be using several custom codelab tutorials created for this session.
 
 here are the links to the tutorials 
 
-1. Lab1 : [Setting up Kubeflow for building Deep Learning based Recommendation Engine](https://meabhishekkumar.github.io/deep-learning-production/codelabs/00-kubeflow-setup/index.html)
+1. Lab1 : [Setting up Kubeflow for building Deep Learning based Recommendation Engine](https://meabhishekkumar.github.io/deep-learning-production/codelabs/01-kubeflow-setup/index.html)
 
 

@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "source": "01-kubeflow-setup.md",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2019-03-20T18:06:56+05:30",
+  "id": "01-kubeflow-setup",
+  "duration": 1,
+  "title": "Strata Conference SF 2019 : Setting Up Kubeflow for Buidling Deep Learning Based Recommendation Engine",
+  "author": "Abhishek Kumar",
+  "summary": "Deep Learning with Productiion",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "sdk"
+  ],
+  "tags": [
+    "android"
+  ],
+  "feedback": "github.com/meabhishekkumar",
+  "ga": "0",
+  "url": "01-kubeflow-setup"
+}
