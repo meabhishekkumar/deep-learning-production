@@ -4,5 +4,6 @@ We will be using several custom codelab tutorials created for this session.
 
 here are the links to the tutorials 
 
-1. Lab1 : [Deploying Deep Learning Model using Tensorflow Serving](https://meabhishekkumar.github.io/deep-learning-production/codelabs/01-basic-tensorflow-serving-tutorial/index.html)
-2. Lab2 : [End-To-End Machine Learning Workflow using Kubeflow] 
+1. Lab1 : [Setting up Kubeflow for building Deep Learning based Recommendation Engine](https://meabhishekkumar.github.io/deep-learning-production/codelabs/00-kubeflow-setup/index.html)
+
+
