@@ -20,6 +20,7 @@ dataset = pd.merge(rating_dataset, book_dataset, how='left',left_on='book_id', r
 
 
 def encode_input(user_to_predict):
+  
     
     item_data = np.array(list(set(dataset.id)))
     user_data = np.array([user_to_predict for i in range(len(item_data))]) # repeating the user_id to the times of each unique item
