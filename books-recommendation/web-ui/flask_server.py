@@ -7,13 +7,14 @@ import tensorflow as tf
 from flask import Flask, json, jsonify, render_template, request
 import pandas as pd
 import numpy as np
+import os 
 
 app = Flask(__name__)
 
 # args = None
-# rating_dataset = pd.read_csv("data/ratings.csv")
-# book_dataset = pd.read_csv("data/books.csv")
-# dataset = pd.merge(rating_dataset, book_dataset, how='left',left_on='book_id', right_on='id')
+rating_dataset = pd.read_csv(os.path.join(os.path.curdir,"data","ratings.csv"))
+book_dataset = pd.read_csv(os.path.join(os.path.curdir,"data","books.csv"))
+dataset = pd.merge(rating_dataset, book_dataset, how='left',left_on='book_id', right_on='id')
 
 
 def encode_input(user_to_predict):
