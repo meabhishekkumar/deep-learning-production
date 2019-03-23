@@ -20,7 +20,7 @@ dataset = pd.merge(rating_dataset, book_dataset, how='left',left_on='book_id', r
 
 
 def encode_input(user_to_predict):
-  
+
     
     item_data = np.array(list(set(dataset.id)))
     user_data = np.array([user_to_predict for i in range(len(item_data))]) # repeating the user_id to the times of each unique item
@@ -61,7 +61,7 @@ def index():
 
     all_predictions = np.array(json.loads(response.text)["predictions"]).flatten()
     recommended_item_ids = (-all_predictions).argsort()[:rec_count]
-    #recommended_item_ids = [1, 2, 3, 4, 5]
+    # recommended_item_ids = [1, 2, 3, 4, 5]
 
     bookes_rated = dict({ x[0]: x[1] for x in dataset[dataset.user_id == user_to_predict][["original_title","small_image_url"]].values})
     bookes_recommended = dict({ x[0]: x[1] for x in book_dataset[book_dataset['id'].isin(recommended_item_ids)][["original_title","small_image_url"]].values})
