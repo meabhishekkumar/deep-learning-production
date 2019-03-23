@@ -38,7 +38,7 @@ spec:
             spec:
               containers:
               - name: {{.WorkerID}}
-                image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train:v2
+                image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train:v3
 
                 command:
                 - "python"
