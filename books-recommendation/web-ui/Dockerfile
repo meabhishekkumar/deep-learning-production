@@ -2,7 +2,7 @@ FROM python:3.6
 
 RUN export TMPDIR=/home/$USER/tmp
 
-RUN pip --no-cache-dir install \
+RUN pip install \
         numpy \
         tensorflow==1.12.0 \
         pandas \
