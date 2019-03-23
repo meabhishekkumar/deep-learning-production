@@ -36,8 +36,7 @@ local replicaSpec = {
         "--tf-model-dir=" + params.modelDir,
         "--tf-export-dir=" + params.exportDir,
         "--tf-train-steps=" + params.trainSteps,
-        "--tf-batch-size=" + params.batchSize,
-        "--tf-learning-rate=" + params.learningRate,
+        "--tf-batch-size=" + params.batchSize
       ],
       env: util.parseEnv(params.envVariables) + trainSecrets,
       image: params.image,
