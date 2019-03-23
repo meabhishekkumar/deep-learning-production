@@ -1,10 +1,35 @@
 <!doctype html>
 <html>
    <body>
-      <form action = "http://localhost/result" method = "POST">
+      <form action = "/" method = "POST">
          <p>User ID <input type = "text" name = "user_id" value="1"/></p>
          <p>Number of Recommedation <input type = "text" name = "rec_count" value="5"/></p>
          <p><input type = "submit" value = "submit" /></p>
       </form>
+
+      {% if is_result is defined %}
+
+      <h2> Books Rated By User : {{ user_to_predict }} </h2>
+       <br>
+       <table border = 1>
+            {% for key, value in bookes_rated.items() %}
+               <tr>
+                  <th> {{ key }} </th>
+                  <td> <img src="{{ value }}" alt="{{ key }}"/> </td>
+               </tr>
+            {% endfor %}
+         </table>
+       <hr/>
+        <h2>Top {{ bookes_recommended_len}} Recommended Books</h2>
+       <table border = 1>
+            {% for key, value in bookes_recommended.items() %}
+               <tr>
+                  <th> {{ key }} </th>
+                  <td> <img src="{{ value }}" alt="{{ key }}"/> </td>
+               </tr>
+            {% endfor %}
+        </table>
+
+      {% endif %}
    </body>
 </html>
