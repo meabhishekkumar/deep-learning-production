@@ -50,16 +50,16 @@ def index():
     result = request.form
     user_to_predict = int(result["user_id"])
     rec_count = int(result["rec_count"])
-    # headers = {'content-type': 'application/json'}
-    # json_data = {"instances": encode_input(user_to_predict)}
-    # request_data = json.dumps(json_data)
-    # response = requests.post(
-    #       url=args.model_url, headers=headers, data=request_data)
+    headers = {'content-type': 'application/json'}
+    json_data = {"instances": encode_input(user_to_predict)}
+    request_data = json.dumps(json_data)
+    response = requests.post(
+          url=args.model_url, headers=headers, data=request_data)
 
 
-    # all_predictions = np.array(json.loads(response.text)["predictions"]).flatten()
-    # recommended_item_ids = (-all_predictions).argsort()[:rec_count]
-    recommended_item_ids = [1, 2, 3, 4, 5]
+    all_predictions = np.array(json.loads(response.text)["predictions"]).flatten()
+    recommended_item_ids = (-all_predictions).argsort()[:rec_count]
+    #recommended_item_ids = [1, 2, 3, 4, 5]
 
     bookes_rated = dict({ x[0]: x[1] for x in dataset[dataset.user_id == user_to_predict][["original_title","small_image_url"]].values})
     bookes_recommended = dict({ x[0]: x[1] for x in book_dataset[book_dataset['id'].isin(recommended_item_ids)][["original_title","small_image_url"]].values})
