@@ -85,7 +85,7 @@ def eval_input_fn(csv_path, batch_size=1000):
     return batch_feats, batch_labels
 
 
-def get_estimator():
+def get_estimator(args):
     # creating book embedding path
     item_input = Input(shape=[1], name="Item-Input")
     item_embedding = Embedding(n_items+1, 10, name="Item-Embedding")(item_input)
@@ -137,7 +137,7 @@ def main(_):
                                       start_delay_secs=1 )
 
     # estimator 
-    estimator = get_estimator()
+    estimator = get_estimator(args)
     print("Train and evaluate")
     tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
     print("Training done")
