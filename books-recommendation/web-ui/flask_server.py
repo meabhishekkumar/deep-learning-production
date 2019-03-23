@@ -10,38 +10,37 @@ import numpy as np
 
 app = Flask(__name__)
 
-# args = None
-# encoder = None
-# rating_dataset = pd.read_csv("data/ratings.csv")
-# book_dataset = pd.read_csv("data/books.csv")
-# dataset = pd.merge(rating_dataset, book_dataset, how='left',left_on='book_id', right_on='id')
+args = None
+rating_dataset = pd.read_csv("data/ratings.csv")
+book_dataset = pd.read_csv("data/books.csv")
+dataset = pd.merge(rating_dataset, book_dataset, how='left',left_on='book_id', right_on='id')
 
 
-# def encode_input(user_to_predict):
+def encode_input(user_to_predict):
     
-#     item_data = np.array(list(set(dataset.id)))
-#     user_data = np.array([user_to_predict for i in range(len(item_data))]) # repeating the user_id to the times of each unique item
+    item_data = np.array(list(set(dataset.id)))
+    user_data = np.array([user_to_predict for i in range(len(item_data))]) # repeating the user_id to the times of each unique item
     
-#     inputs = pd.DataFrame({
-#     'User-Input': user_data,
-#     'Item-Input': item_data
-#     })
+    inputs = pd.DataFrame({
+    'User-Input': user_data,
+    'Item-Input': item_data
+    })
 
 
-#     examples = []
+    examples = []
     
-#     for index, row in inputs.iterrows():
-#         feature = {}
-#         for col, value in row.iteritems():
-#             feature[col] = tf.train.Feature(float_list=tf.train.FloatList(value=[value]))
-#         example = tf.train.Example(
-#             features=tf.train.Features(
-#                 feature=feature
-#             )
-#         )
-#         b64_value = base64.b64encode(example.SerializeToString()).decode("utf-8")
-#         examples.append({"examples": {"b64": b64_value}})
-#     return examples
+    for index, row in inputs.iterrows():
+        feature = {}
+        for col, value in row.iteritems():
+            feature[col] = tf.train.Feature(float_list=tf.train.FloatList(value=[value]))
+        example = tf.train.Example(
+            features=tf.train.Features(
+                feature=feature
+            )
+        )
+        b64_value = base64.b64encode(example.SerializeToString()).decode("utf-8")
+        examples.append({"examples": {"b64": b64_value}})
+    return examples
 
 
 
