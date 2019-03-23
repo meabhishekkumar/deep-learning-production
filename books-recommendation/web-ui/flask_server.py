@@ -49,7 +49,7 @@ def index():
 
 
 # handle requests to the server
-@APP.route('/result',methods = ['POST', 'GET'])
+@app.route('/result',methods = ['POST', 'GET'])
 def result():
   # get url parameters for HTML template
   # name_arg = request.args.get('name', 'book-recsys')
