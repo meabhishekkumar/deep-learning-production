@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import os 
 import argparse
+import base64
 
 app = Flask(__name__)
 
