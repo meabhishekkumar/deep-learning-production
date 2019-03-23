@@ -107,7 +107,7 @@ def get_estimator():
     model = Model([user_input, item_input], out)
     model.compile('adam', 'mean_squared_error')
     model.summary()
-    return tf.keras.estimator.model_to_estimator(keras_model=model)
+    return tf.keras.estimator.model_to_estimator(keras_model=model,model_dir=args.tf_model_dir)
 
 
 def main(_):
