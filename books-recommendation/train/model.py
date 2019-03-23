@@ -30,10 +30,17 @@ def parse_arguments():
                       type=str,
                       default='/tmp/export/',
                       help='GCS path or local directory to export model')
+    
+
     parser.add_argument('--tf-train-steps',
                         type=int,
                         default=100,
                         help='The number of training steps to perform.')
+    parser.add_argument('--tf-embedding-size',
+                        type=int,
+                        default=10,
+                        help='The embedding size.')
+
     parser.add_argument('--tf-batch-size',
                         type=int,
                         default=1024,
@@ -88,12 +95,12 @@ def eval_input_fn(csv_path, batch_size=1000):
 def get_estimator(args):
     # creating book embedding path
     item_input = Input(shape=[1], name="Item-Input")
-    item_embedding = Embedding(n_items+1, 10, name="Item-Embedding")(item_input)
+    item_embedding = Embedding(n_items+1, args.tf_embedding_size, name="Item-Embedding")(item_input)
     item_vec = Flatten(name="Flatten-Items")(item_embedding)
 
     # creating user embedding path
     user_input = Input(shape=[1], name="User-Input")
-    user_embedding = Embedding(n_users+1, 10, name="User-Embedding")(user_input)
+    user_embedding = Embedding(n_users+1, args.tf_embedding_size, name="User-Embedding")(user_input)
     user_vec = Flatten(name="Flatten-Users")(user_embedding)
 
     # concatenate features
