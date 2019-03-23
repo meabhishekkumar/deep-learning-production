@@ -4,7 +4,7 @@ metadata:
   namespace: kubeflow
   labels:
     controller-tools.k8s.io: "1.0"
-  name: rbooks-recsys-random-example
+  name: books-recsys-random-example
 spec:
   studyName: books-recsys-random-example
   owner: crd
@@ -15,7 +15,7 @@ spec:
   metricsnames:
     - mean_absolute_error
   parameterconfigs:
-    - name: --embedding-size
+    - name: --tf-embedding-size
       parametertype: int
       feasible:
         min: "10"
