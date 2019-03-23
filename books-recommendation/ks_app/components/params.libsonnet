@@ -49,5 +49,13 @@
       secret: '',
       secretKeyRefs: '',
     },
+    "web-ui": {
+      containerPort: 5000,
+      image: "",
+      name: "web-ui",
+      replicas: 1,
+      servicePort: 80,
+      type: "ClusterIP",
+    },
   },
 }
