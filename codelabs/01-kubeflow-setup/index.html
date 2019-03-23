@@ -53,8 +53,67 @@
 <h2>Enabling Boost Mode (Cloud Shell Only)</h2>
 <p>If you are running this codelab out of Cloud Shell, you can enable Boost Mode.It can be enabled through the settings dropdown.</p>
 <p><img alt="enable_boost_mode" src="img/543a85501094e43b.png"></p>
+<p><strong>Setting Environment Variables</strong></p>
+<p>Before we can start, we should set up a few environment variables we will be using through the course of the codelab. The first is the project ID, which denotes which GCP project we will be using</p>
+<pre><code>// available project ids can be listed with the following command:
+// gcloud projects list
+PROJECT_ID=&lt;YOUR_CHOSEN_PROJECT_ID&gt;
+
+gcloud config set project $PROJECT_ID
+
+</code></pre>
+<p>We also need to provide the zone we want to use</p>
+<pre><code>ZONE=&lt; CHOICE OF ZONE &gt; 
+
+</code></pre>
+<p>Next, we will set the Kubeflow deployment name</p>
+<pre><code>DEPLOYMENT_NAME=&lt; Name of Deployment &gt; 
+
+</code></pre>
+<p>Enabling the API<br>Before using Google Kubernetes Engine (GKE), you must enable the API for your project through the <a href="https://console.cloud.google.com/apis/library/container.googleapis.com?pli=1&project=river-button-175704&folder&organizationId" target="_blank">Google Cloud Platform Console</a></p>
 <p><strong>Setting Up Kubeflow Cluster</strong></p>
 <p><img alt="deploy_kubeflow" src="img/838d6667de102335.png"></p>
+<p>Fill in the following values in the resulting form:</p>
+<ul>
+<li>Project: Enter your GCP $PROJECT_ID in the top field</li>
+<li>Deployment name: Set the default value to mnist-deployment. Alternatively, set $DEPLOYMENT_NAME to a different value and use it here. Note that this value must be unique within the project.</li>
+<li>GKE Zone: Use the value you have set for $ZONE, selecting it from the pulldown.</li>
+<li>Kubeflow Version: v0.4.1</li>
+<li>Check the Skip IAP box</li>
+</ul>
+<p>The resources created here will be controlled by the <a href="https://console.cloud.google.com/dm" target="_blank">GCP Deployment Manager</a>. Here, you can see the current status of the deployment and manage everything in one place. It may take up to 10 minutes before the cluster is ready to use.</p>
+<p><img alt="GCP DM" src="img/344e84f5439484a9.png"></p>
+<p>When the cluster is fully set up, you can connect your local kubectl session to it. The following command should output &#34;kubeconfig entry generated&#34; when run successfully, letting you know that your GCP credentials were added to your kubeconfig</p>
+<pre><code>gcloud container clusters get-credentials \
+    $DEPLOYMENT_NAME --zone $ZONE --project $PROJECT_ID
+</code></pre>
+<p>Now, you should now be able to interact with your cluster through the kubectl command. Switch to the kubeflow namespace to see the resources that were pre-installed on the Kubeflow cluster</p>
+<pre><code>kubectl config set-context $(kubectl config current-context) --namespace=kubeflow
+</code></pre>
+<p>If you query the resources running on your cluster, you should see that Kubeflow has automatically provisioned everything you&#39;ll need to run training and serving jobs.</p>
+<pre><code>kubectl get all
+</code></pre>
+<p>For more information on the components that you see listed here, check out the <a href="https://www.kubeflow.org/docs/components/" target="_blank">official documentation</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Training on Jupyter Notebook" duration="1">
+        <p>In this tutorial, You will learn to open and access <a href="http://www.kubeflow.org/" target="_blank">Jupyter Notebook</a> for building and deploying deep learning based recommendation engine.</p>
+<p>Once the kubeflow  is set up , you can view it under clusters</p>
+<p><img alt="kubeflow_services" src="img/9e3c3a9dc0a9dab9.png"></p>
+<p>you need to select jupyter-lb option and click on it. This would take you to</p>
+<p><img alt="jupyter_lb" src="img/f15106014a605346.png"></p>
+<p>You need to click on the Port forwarding button in order to launch the jupyter hub. This would open another dialogue box where you need to click on Run in Cloud Shell button</p>
+<p><img alt="cloud_shell" src="img/91ed7f13be4c35dd.png"></p>
+<p>After that you need to click on Open in web preview to access jupyter hub</p>
+<p><img alt="cloud_shell" src="img/139f646933305f31.png"></p>
+<p>This would open up the login page for accessing jupyter notebook where you need to enter the login credentials</p>
+<p><img alt="cloud_shell" src="img/98eac947cdb86d2.png"></p>
+<p>The next page is spawner options</p>
+<p><img alt="cloud_shell" src="img/cc8f11fa31a7b300.png"></p>
+<p>You have to click on Spawn and that would take you to Jupyter home directory</p>
+<p><img alt="cloud_shell" src="img/55972daee910b715.png"></p>
 
 
       </google-codelab-step>
