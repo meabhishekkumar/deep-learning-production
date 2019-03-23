@@ -53,9 +53,11 @@ spec:
               restartPolicy: Never
 
   suggestionSpec:
-    suggestionAlgorithm: "bayesianoptimization"
+    suggestionAlgorithm: "grid"
     suggestionParameters:
-      -
-          name: "burn_in"
+      - 
+          name: "DefaultGrid"
+          value: "1"
+      - 
+          name: "--embedding-size"
           value: "5"
-    requestNumber: 10
