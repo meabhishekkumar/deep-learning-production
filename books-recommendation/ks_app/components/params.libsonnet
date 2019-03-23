@@ -19,7 +19,7 @@
       secretKeyRefs: '',
       trainSteps: 200,
     },
-    "book-recsys-deploy-gcp": {
+    book-recsys-deploy-gcp: {
       defaultCpuImage: 'tensorflow/serving:1.11.1',
       defaultGpuImage: 'tensorflow/serving:1.11.1-gpu',
       deployHttpProxy: 'false',
@@ -33,7 +33,7 @@
       numGpus: '0',
       versionName: 'v1',
     },
-    "book-recsys-service": {
+    book-recsys-service: {
       enablePrometheus: 'true',
       injectIstio: 'false',
       modelName: 'book-recsys',
@@ -41,7 +41,7 @@
       serviceType: 'ClusterIP',
       trafficRule: 'v1:100',
     },
-    "tensorboard": {
+    tensorboard: {
       envVariables: 'GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/user-gcp-sa.json',
       image: "tensorflow/tensorflow:1.12.0",
       logDir: "gs://example/to/model/logdir",
