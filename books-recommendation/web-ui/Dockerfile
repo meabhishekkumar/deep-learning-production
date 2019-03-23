@@ -14,6 +14,8 @@ RUN pip install \
 ENV PYTHONUNBUFFERED=0
 
 # add project files
+RUN mkdir /home/data/
+ADD data/*.csv /home/data/
 ADD *.py /home/
 ADD templates/* /home/templates/
 ADD static/styles /home/static/styles/
