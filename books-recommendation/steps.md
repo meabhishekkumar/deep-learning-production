@@ -133,11 +133,15 @@ docker push $TRAIN_PATH
 Train on the cluster
 
 ```
+
+
 //set the parameters for this job
 ks param set train image $TRAIN_PATH
 ks param set train name "train-book-recsys-1"
+ks param set train trainSteps 200
 ks param set train modelDir gs://${BUCKET_NAME}/model
 ks param set train exportDir gs://${BUCKET_NAME}/export
+
 ```
 
 check service account access 

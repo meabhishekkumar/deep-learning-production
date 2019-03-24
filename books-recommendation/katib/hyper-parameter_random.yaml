@@ -34,10 +34,10 @@ spec:
               spec:
                 containers:
                 - name: {{.WorkerID}}
-                  image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train:v3
+                  image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train
                   command:
-                  - "python"
-                  - "model.py"
+                  - "/usr/bin/python"
+                  - "/opt/model.py"
                   {{- with .HyperParameters}}
                   {{- range .}}
                   - "{{.Name}}={{.Value}}"
