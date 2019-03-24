@@ -1,0 +1,63 @@
+apiVersion: "kubeflow.org/v1alpha1"
+kind: StudyJob
+metadata:
+  namespace: kubeflow
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: books-recsys-example
+
+spec:
+  studyName: books-recsys-example
+  owner: crd
+  optimizationtype: minimize
+  objectivevaluename: mean_squared_error
+  optimizationgoal: 0.6
+  requestcount: 10
+
+  parameterconfigs:
+    - name: --embedding-size
+      parametertype: int
+      feasible:
+        min: "10"
+        max: "50"
+
+
+  workerSpec:
+    goTemplate:
+      rawTemplate: |-
+        apiVersion: batch/v1
+        kind: Job
+        metadata:
+          name: {{.WorkerID}}
+          namespace: kubeflow
+        spec:
+          template:
+            # The training worker uses the Ames housing example found at
+            # https://github.com/kubeflow/examples/tree/master/xgboost_ames_housing.
+            # Please first follow the steps and create the required prerequisites.
+            spec:
+              containers:
+              - name: {{.WorkerID}}
+                image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train:v3
+
+                command:
+                - "python"
+                - "model.py"
+                - "--tf-model-dir=/tmp/model_{{.WorkerID}}"
+                - "--tf-export-dir=/tmp/export_{{.WorkerID}}"
+                {{- with .HyperParameters}}
+                {{- range .}}
+                - "{{.Name}}={{.Value}}"
+                {{- end}}
+                {{- end}}
+              restartPolicy: Never
+
+  suggestionSpec:
+    suggestionAlgorithm: "grid"
+    suggestionParameters:
+      - 
+          name: "DefaultGrid"
+          value: "1"
+      - 
+          name: "--embedding-size"
+          value: "5"
