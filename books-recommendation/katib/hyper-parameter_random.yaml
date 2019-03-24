@@ -12,6 +12,8 @@ spec:
   objectivevaluename: loss
   optimizationgoal: 0.8
   requestcount: 4
+  metricsnames:
+    - mean_squared_error
   parameterconfigs:
     - name: --tf-embedding-size
       parametertype: int
