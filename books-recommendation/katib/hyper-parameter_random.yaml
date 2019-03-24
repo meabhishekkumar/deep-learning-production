@@ -9,11 +9,9 @@ spec:
   studyName: books-recsys-random-example
   owner: crd
   optimizationtype: minimize
-  objectivevaluename: mean_squared_error
-  optimizationgoal: 0.7
+  objectivevaluename: loss
+  optimizationgoal: 0.8
   requestcount: 4
-  metricsnames:
-    - mean_absolute_error
   parameterconfigs:
     - name: --tf-embedding-size
       parametertype: int
