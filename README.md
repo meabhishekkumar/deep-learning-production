@@ -1,10 +1,13 @@
 ## The Hitchhiker's Guide to Deep Learning Based Recommenders in Production
 
-We will be using several custom codelab tutorials created for this session. 
+### Content
 
-here are the links to the tutorials 
+Presentation : 
 
-1. Lab1 : [Setting up Kubeflow for building Deep Learning based Recommendation Engine](https://meabhishekkumar.github.io/deep-learning-production/codelabs/01-kubeflow-setup/index.html)
+CodeLab : [Deep Learning based Recommendation Engine on Kubeflow](https://meabhishekkumar.github.io/deep-learning-production/codelabs/01-kubeflow-setup/index.html)
 
-Test
+Useful Links :
+
+[Link to our Strata 2018 Talk with Codebase and Slides](https://github.com/meabhishekkumar/strata-conference-ca-2018)
+
 
