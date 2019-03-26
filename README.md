@@ -2,7 +2,7 @@
 
 ### Content
 
-Presentation : 
+Presentation : [Link](https://meabhishekkumar.github.io/deep-learning-production/presentation.pdf)
 
 CodeLab : [Deep Learning based Recommendation Engine on Kubeflow](https://meabhishekkumar.github.io/deep-learning-production/codelabs/01-kubeflow-setup/index.html)
 
