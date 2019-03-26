@@ -130,6 +130,11 @@ gcloud auth configure-docker --quiet
 docker push $TRAIN_PATH
 ```
 
+
+docker image rm $TRAIN_PATH
+
+
+
 Train on the cluster
 
 ```
@@ -233,6 +238,11 @@ gcloud auth configure-docker --quiet
 docker push $UI_PATH
 ```
 
+//delete docker image
+```
+docker image rm $UI_PATH
+```
+
 set parameters and deploy
 
 ```
@@ -251,3 +261,6 @@ kubectl get service web-ui
 kubectl apply -f $WORKING_DIR/katib/hyper-parameter_random.yaml
 kubectl get studyjob
 kubectl describe studyjobs books-recsys-example
+
+
+### Clean up 

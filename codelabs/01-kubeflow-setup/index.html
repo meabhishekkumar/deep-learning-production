@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>Strata Conference SF 2019 : Setting Up Kubeflow for Buidling Deep Learning Based Recommendation Engine</title>
+  <title>Strata Conference SF 2019 : The hitchhiker&#39;s guide to deep learning-based recommenders in production</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
@@ -21,7 +21,7 @@
 </head>
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
-  <google-codelab title="Strata Conference SF 2019 : Setting Up Kubeflow for Buidling Deep Learning Based Recommendation Engine"
+  <google-codelab title="Strata Conference SF 2019 : The hitchhiker&#39;s guide to deep learning-based recommenders in production"
                   environment="web"
                   feedback-link="github.com/meabhishekkumar">
     
@@ -98,8 +98,8 @@ gcloud config set project $PROJECT_ID
 
       </google-codelab-step>
     
-      <google-codelab-step label="Training on Jupyter Notebook" duration="1">
-        <p>In this tutorial, You will learn to open and access <a href="http://www.kubeflow.org/" target="_blank">Jupyter Notebook</a> for building and deploying deep learning based recommendation engine.</p>
+      <google-codelab-step label="Development on Jupyter Notebook" duration="1">
+        <p>In this tutorial, you will learn to open and access <a href="http://www.kubeflow.org/" target="_blank">Jupyter Notebook</a> for building and deploying deep learning based recommendation engine.</p>
 <p>Once the kubeflow  is set up , you can click on Cloud Shell button<br><img alt="kubeflow_services" src="img/9e3c3a9dc0a9dab9.png"></p>
 <p>you need to select jupyter-lb option and click on it. This would take you to</p>
 <p><img alt="jupyter_lb" src="img/f15106014a605346.png"></p>
@@ -107,12 +107,268 @@ gcloud config set project $PROJECT_ID
 <p><img alt="cloud_shell" src="img/91ed7f13be4c35dd.png"></p>
 <p>After that you need to click on Open in web preview to access jupyter hub</p>
 <p><img alt="cloud_shell" src="img/139f646933305f31.png"></p>
-<p>This would open up the login page for accessing jupyter notebook where you need to enter the login credentials</p>
+<p>This would open up the login page for accessing jupyter notebook where you need to enter the login credentials (use any )</p>
 <p><img alt="cloud_shell" src="img/98eac947cdb86d2.png"></p>
-<p>The next page is spawner options</p>
+<p>The next page is spawner options where you need to select the base image name ( TF ver - 1.12.0)</p>
 <p><img alt="cloud_shell" src="img/cc8f11fa31a7b300.png"></p>
 <p>You have to click on Spawn and that would take you to Jupyter home directory</p>
 <p><img alt="cloud_shell" src="img/55972daee910b715.png"></p>
+<p>Go to work directory  and open terminal.</p>
+<p>Clone the repo where we have already created notebooks for you.</p>
+<pre><code>git clone https://github.com/meabhishekkumar/deep-learning-production.git
+
+</code></pre>
+<p>Navigate to <strong>Notebooks</strong> folder where you will find the <strong>deep-learning-book-recommendation.ipynb</strong> notebook. Open the notebook and try running all cells one by one.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Training At Scale" duration="0">
+        <p>We will be working out of the &#34;books-recommendation&#34; directory of the repository, so change to the proper directory and set an environment variable</p>
+<h2>Navigate to book-recommendation</h2>
+<pre><code>cd books-recommendation
+WORKING_DIR=$(pwd)
+</code></pre>
+<h2>Creating a ksonnet Project</h2>
+<p>Kubeflow makes use of ksonnet to help manage deployments. ksonnet is a templating engine that acts as another layer on top of kubectl. While Kubernetes is typically managed with static YAML files, ksonnet allows you to create parameters that can be swapped out for different environments, which is a useful feature for complex machine learning workloads</p>
+<p>If you don&#39;t have ksonnet&#39;s ks command installed, download it and add it to your path (if it&#39;s already installed on your system, you can skip this step)</p>
+<pre><code>// download ksonnet for linux (including Cloud Shell)
+// for macOS, use ks_0.13.0_darwin_amd64 for Linux use : ks_0.13.0_linux_amd64
+KS_VER=ks_0.13.0_linux_amd64
+
+//download tar of ksonnet
+wget --no-check-certificate \
+    https://github.com/ksonnet/ksonnet/releases/download/v0.13.0/$KS_VER.tar.gz
+
+//unpack file
+tar -xvf $KS_VER.tar.gz
+
+//add ks command to path
+PATH=$PATH:$(pwd)/$KS_VER
+</code></pre>
+<p>Ksonnet resources are managed in a single project directory, just like git. To create our ksonnet project directory, we will use ks init:</p>
+<pre><code>KS_NAME=my_ksonnet_app
+ks init $KS_NAME
+cd $KS_NAME
+</code></pre>
+<p>If you look inside the new my_ksonnet_app project directory, you should see an app.yaml file, along with four directories. One directory is environments, which was automatically populated with information about how to attach to your Kubernetes cluster. You can list information about the default environment with the following command</p>
+<pre><code>ks env list
+
+</code></pre>
+<p>Another folder within your ksonnet project is components, which holds a set of jsonnet files that represent Kubernetes resources that can be deployed to the cluster. For now it is mostly empty. For the purpose of the codelab, we will add some pre-written components to train and serve a Tensorflow model:</p>
+<pre><code>cp $WORKING_DIR/ks_app/components/* $WORKING_DIR/$KS_NAME/components
+
+</code></pre>
+<p>You will now have a number of ksonnet components that are ready to be customized and deployed. You can list them using the ks command</p>
+<pre><code>ks component list
+</code></pre>
+<p>Now, add some Kubeflow resources to your local ksonnet project</p>
+<pre><code>VERSION=v0.4.1
+ks registry add kubeflow \
+    github.com/kubeflow/kubeflow/tree/${VERSION}/kubeflow
+ks pkg install kubeflow/tf-serving@${VERSION}
+</code></pre>
+<aside class="special"><p><br>About Components</p>
+</aside>
+<p>Components are the basic unit of deployment in ksonnet. A component is a single jsonnet template file representing a set of Kubernetes resources that should be deployed together. Each component typically has a set of parameters that can be modified, making it reusable in different contexts. Parameters can be set to different values for different environments. The components we are using for this codelab can be found here</p>
+<p>The code for our Tensorflow project can be found in the model.py file in the examples repository. model.py defines a fairly straight-forward Tensorflow training program, with no special modifications for Kubeflow. After training is complete, it will attempt to upload the trained model to a path we input. For the purpose of this codelab, we will create and use a Google Cloud Storage (GCS) bucket to hold the trained model.</p>
+<h2>Setting up a Storage Bucket</h2>
+<pre><code>BUCKET_NAME=strata-$KS_NAME-$PROJECT_ID
+gsutil mb gs://$BUCKET_NAME/
+</code></pre>
+<h2>Building the Container</h2>
+<p>To deploy our code to Kubernetes, we have to first build our local project into a container:</p>
+<pre><code>//set the path on GCR you want to push the image to
+TRAIN_PATH=us.gcr.io/$PROJECT_ID/ak-kubeflow-train
+
+//build the tensorflow model into a container
+//container is tagged with its eventual path on GCR, but it stays local for now
+docker build $WORKING_DIR/train -t $TRAIN_PATH -f $WORKING_DIR/train/Dockerfile.model
+</code></pre>
+<p>Now, test the new container image locally to make sure everything is working as expected</p>
+<pre><code>docker run -it $TRAIN_PATH
+</code></pre>
+<p>You should see training logs start appearing in your console:</p>
+<p>If you&#39;re seeing logs, that means training is working and you can terminate the container with Ctrl+c. Now that you know that the container can run locally, you can safely upload it to Google Container Registry (GCR) so you can run it on your cluster.</p>
+<pre><code>//allow docker to access our GCR registry
+gcloud auth configure-docker --quiet
+
+//push container to GCR
+docker push $TRAIN_PATH
+</code></pre>
+<p>If you are using cloud shell, you may run out of space. So, you can clean up existing containers / images.</p>
+<pre><code>docker ps
+docker stop &lt;CONTAINER_ID&gt;
+docker rm &lt;CONTAINER_ID&gt;
+docker image rm -f $TRAIN_PATH
+
+</code></pre>
+<h2>Training on the cluster</h2>
+<p>Finally, we can run the training job on the cluster. We can do this using the train component we added to our ksonnet project earlier. Before we can deploy it, we must set some parameters to point to our training image and storage bucket</p>
+<pre><code>//set the parameters for this job
+ks param set train image $TRAIN_PATH
+ks param set train name &#34;train-book-recsys-1&#34;
+ks param set train modelDir gs://${BUCKET_NAME}/model
+ks param set train exportDir gs://${BUCKET_NAME}/export
+</code></pre>
+<p>One thing to keep in mind is that our python training code has to have permissions to read/write to the storage bucket we set up. Kubeflow solves this by creating a service account within your project as a part of the deployment. You can verify this by listing your service accounts:</p>
+<pre><code>gcloud --project=$PROJECT_ID iam service-accounts list | grep $DEPLOYMENT_NAME
+</code></pre>
+<p>This service account should be automatically granted the right permissions to read and write to our storage bucket. Kubeflow also added a Kubernetes secret called &#34;user-gcp-sa&#34; to our cluster, containing the credentials needed to authenticate as this service account within our cluster:</p>
+<pre><code>kubectl describe secret user-gcp-sa
+</code></pre>
+<p>To access our storage bucket from inside our train container, we just need to set the GOOGLE_APPLICATION_CREDENTIALS environment variable to point to the json file contained in the secret. Luckily, the train.jsonnet component is already set up to do this for us, we just have to set two more parameters:</p>
+<pre><code>ks param set train secret user-gcp-sa=/var/secrets
+ks param set train envVariables \
+    GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/user-gcp-sa.json
+</code></pre>
+<p>Now that all the parameters are set, we can deploy the training job to the cluster:</p>
+<pre><code>ks apply default -c train
+</code></pre>
+<p>Negative<br>:If this command is hanging for you in Cloud Shell, make sure you&#39;ve enabled Boost Mode for extra compute power</p>
+<p>After applying the component, there should be a new tf-job on the cluster called my-train-1-chief-0. You can use kubectl to query some information about the job, including its current state.</p>
+<pre><code>kubectl describe tfjob
+</code></pre>
+<p>For even more information, you can retrieve the python logs from the pod that&#39;s running the container itself (after the container has finished initializing):</p>
+<pre><code>kubectl logs -f train-book-recsys-1-chief-0
+</code></pre>
+<p>When training is complete, you should see the model data pushed into your GCS bucket.</p>
+<aside class="special"><p>Note: The model is actually saving two outputs:</p>
+</aside>
+<p>1) a set of checkpoints to resume training later if desired</p>
+<p>2) A directory called export, which holds the model in a format that can be read by a TensorFlow Serving component</p>
+<h2>Monitoring</h2>
+<p>Setup the LOG Dir pointing to the Model folder in the GCS bucket.</p>
+<pre><code>LOGDIR=gs://${BUCKET_NAME}/model
+
+</code></pre>
+<p>Set up logDir in the Tensboard.</p>
+<pre><code>ks param set tensorboard logDir ${LOGDIR}
+</code></pre>
+<p>To enable the access for Tensorflow , add credentials like we did during the training.</p>
+<pre><code>ks param set tensorboard secret user-gcp-sa=/var/secrets
+ks param set tensorboard envVariables \
+    GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/user-gcp-sa.json
+</code></pre>
+<p>Now you can apply the changes and run the <strong>Tensorboard</strong>.</p>
+<pre><code>ks apply default -c tensorboard
+
+</code></pre>
+<p>In order to view <strong>Tensorboard</strong> you can use port-forwarding.</p>
+<pre><code>kubectl port-forward service/tensorboard-tb 8092:80
+
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Serving" duration="0">
+        <p>Now that you have a trained model, it&#39;s time to put it in a server so it can be used to handle requests. To do this, we&#39;ll use two more components from the repository, called <strong>book-recsys-deploy-gcp</strong> and <strong>book-recsys-service</strong></p>
+<p>The <strong>book-recsys-deploy-gcp</strong> component contains a TensorFlow Serving implementation. We simply need to point the component to our GCS bucket where the model data is stored, and it will spin up a server to handle requests. Unlike the tf-job, no custom container is required for the server process. Instead, all the information the server needs is stored in the model file</p>
+<pre><code>ks param set book-recsys-deploy-gcp modelBasePath gs://${BUCKET_NAME}/export
+ks param set book-recsys-deploy-gcp modelName book-recsys
+ks apply default -c book-recsys-deploy-gcp
+</code></pre>
+<p>To verify the server started successfully, you can check its logs. You should see that it found your bucket and is waiting for requests</p>
+<pre><code>kubectl logs -l app=book-recsys
+</code></pre>
+<p>Although we now have a server running as a deployment within the cluster, it&#39;s inaccessible to other pods without adding an associated service. We can do so by deploying the book-recsys-serve component, which simply creates a ClusterIP service associated with the book-recsys-deploy-gcp deployment.</p>
+<pre><code>ks apply default -c book-recsys-service
+</code></pre>
+<p>If you describe the new service, you&#39;ll see it&#39;s listening for connections within the cluster on port 9000</p>
+<pre><code>kubectl describe service book-recsys-service
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deploy UI" duration="0">
+        <p>Now that we have a trained model in our bucket, and a Tensorflow server hosting it, we can deploy the final piece of our system: a web interface to interact with our model. The code for this is stored in the web-ui directory of the repository.</p>
+<p>The web page for this task is fairly basic; it consists of a simple flask server hosting HTML/CSS/Javascript files. The flask script makes use of Rest End Point exposed by <strong>Tensorflow Serving</strong>.</p>
+<p>&lt;&lt; IMAGE &gt;&gt;</p>
+<p>You can also use the python code to interact with the TensorFlow server through gRPC. Here is a sample :</p>
+<pre><code>from grpc.beta import implementations
+from tensorflow_serving.apis import predict_pb2
+from tensorflow_serving.apis import prediction_service_pb2 as psp
+
+# create gRPC stub
+channel = implementations.insecure_channel(server_host, server_port)
+stub = psp.beta_create_PredictionService_stub(channel)
+
+# build request
+request = predict_pb2.PredictRequest()
+request.model_spec.name = server_name
+request.model_spec.signature_name = &#39;serving_default&#39;
+request.inputs[&#39;x&#39;].CopyFrom(
+    tf.contrib.util.make_tensor_proto(image, shape=image.shape))
+
+# retrieve results
+result = stub.Predict(request, timeout)
+resultVal = result.outputs[&#34;classes&#34;].int_val[0]
+scores = result.outputs[&#39;predictions&#39;].float_val
+version = result.outputs[&#34;classes&#34;].int_val[0]
+
+</code></pre>
+<h2>Building the Container</h2>
+<p>Like in the training step, we have to build a container from our code before we can deploy it on the cluster:</p>
+<pre><code>// set the path on GCR you want to push the image to
+UI_PATH=us.gcr.io/$PROJECT_ID/ak-kubeflow-web-ui
+
+// build the web-ui directory
+docker build $WORKING_DIR/web-ui -t $UI_PATH
+
+// allow docker to access our GCR registry
+gcloud auth configure-docker --quiet
+
+// push the container to GCR
+docker push $UI_PATH
+</code></pre>
+<p>If you are using cloud shell, you may run out of space. So, you can clean up existing containers / images.</p>
+<pre><code>docker ps
+docker stop &lt;CONTAINER_ID&gt;
+docker rm &lt;CONTAINER_ID&gt;
+docker image rm -f $UI_PATH
+
+</code></pre>
+<p>Set parameters and deploy to the cluster</p>
+<pre><code>// set parameters
+ks param set web-ui image $UI_PATH
+ks param set web-ui type LoadBalancer
+
+// apply to cluster
+ks apply default -c web-ui
+</code></pre>
+<h2>Accessing the UI</h2>
+<p>The web-ui service is deployed using the type LoadBalancer, unlike our previous book-recsys-service, which was ClusterIP. This means that while book-recsys-service is only accessible to other pods within our cluster, web-ui is exposed to the public internet.</p>
+<p>You can find the IP address assigned to the service using kubectl</p>
+<pre><code>kubectl get service web-ui
+</code></pre>
+<aside class="special"><p>Note: It may take a few minutes for the IP address to appear</p>
+</aside>
+<p>If you enter the IP address in a web browser, you should be presented with the web interface.<br></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Clean up" duration="0">
+        <p>When you&#39;re done with the codelab, it&#39;s a good idea to remove the resources you created to avoid any charges:</p>
+<p>Delete the cluster and other resources provisioned by Kubeflow:</p>
+<pre><code>gcloud deployment-manager deployments delete $DEPLOYMENT_NAME
+
+</code></pre>
+<p>Delete the Google Cloud Storage bucket:</p>
+<pre><code>gsutil rm -r gs://$BUCKET_NAME
+</code></pre>
+<p>Delete the container images uploaded to Google Container Registry:</p>
+<pre><code>//find the digest id for each container image
+gcloud container images list-tags us.gcr.io/$PROJECT_ID/kubeflow-train
+gcloud container images list-tags us.gcr.io/$PROJECT_ID/kubeflow-web-ui
+
+//delete each image
+gcloud container images delete us.gcr.io/$PROJECT_ID/kubeflow-web-ui:$DIGEST_ID
+gcloud container images delete us.gcr.io/$PROJECT_ID/kubeflow-train:$DIGEST_ID
+</code></pre>
+<p>Resources can also be deleted directly through the Google Cloud Console UI.</p>
 
 
       </google-codelab-step>
