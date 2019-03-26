@@ -9,11 +9,11 @@ spec:
   studyName: books-recsys-random-example
   owner: crd
   optimizationtype: minimize
-  objectivevaluename: mean_squared_error
-  optimizationgoal: 0.7
+  objectivevaluename: loss
+  optimizationgoal: 0.8
   requestcount: 4
   metricsnames:
-    - mean_absolute_error
+    - mean_squared_error
   parameterconfigs:
     - name: --tf-embedding-size
       parametertype: int
@@ -34,10 +34,10 @@ spec:
               spec:
                 containers:
                 - name: {{.WorkerID}}
-                  image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train:v3
+                  image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train
                   command:
-                  - "python"
-                  - "model.py"
+                  - "/usr/bin/python"
+                  - "/opt/model.py"
                   {{- with .HyperParameters}}
                   {{- range .}}
                   - "{{.Name}}={{.Value}}"
