@@ -55,6 +55,7 @@ def index():
     headers = {'content-type': 'application/json'}
     json_data = {"instances": encode_input(user_to_predict)}
     request_data = json.dumps(json_data)
+    ## model URL : http://book-recsys-service:8500/v1/models/book-recsys:predict
     response = requests.post(
           url=args.model_url, headers=headers, data=request_data)
 
