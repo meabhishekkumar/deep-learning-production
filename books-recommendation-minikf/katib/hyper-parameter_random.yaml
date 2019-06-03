@@ -1,0 +1,49 @@
+apiVersion: "kubeflow.org/v1alpha1"
+kind: StudyJob
+metadata:
+  namespace: kubeflow
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: books-recsys-random-example
+spec:
+  studyName: books-recsys-random-example
+  owner: crd
+  optimizationtype: minimize
+  objectivevaluename: loss
+  optimizationgoal: 0.8
+  requestcount: 4
+  metricsnames:
+    - mean_squared_error
+  parameterconfigs:
+    - name: --tf-embedding-size
+      parametertype: int
+      feasible:
+        min: "10"
+        max: "15"
+
+  workerSpec:
+    goTemplate:
+        rawTemplate: |-
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: {{.WorkerID}}
+            namespace: kubeflow
+          spec:
+            template:
+              spec:
+                containers:
+                - name: {{.WorkerID}}
+                  image: us.gcr.io/nissan-helios-189503/ak-kubeflow-train
+                  command:
+                  - "/usr/bin/python"
+                  - "/opt/model.py"
+                  {{- with .HyperParameters}}
+                  {{- range .}}
+                  - "{{.Name}}={{.Value}}"
+                  {{- end}}
+                  {{- end}}
+                restartPolicy: Never
+  suggestionSpec:
+    suggestionAlgorithm: "random"
+    requestNumber: 3

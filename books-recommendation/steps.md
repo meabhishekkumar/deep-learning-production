@@ -108,7 +108,7 @@ Build Training Image
 
 ```
 //set the path on GCR you want to push the image to
-TRAIN_PATH=us.gcr.io/$PROJECT_ID/ak-kubeflow-train
+TRAIN_PATH=us.gcr.io/$PROJECT_ID/ak-kubeflow-train:v1
 
 //build the tensorflow model into a container
 //container is tagged with its eventual path on GCR, but it stays local for now

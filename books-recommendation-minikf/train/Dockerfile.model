@@ -1,0 +1,11 @@
+#This container contains your model and any helper scripts specific to your model.
+FROM tensorflow/tensorflow:1.12.0
+
+RUN mkdir /tmp/data
+ADD ratings.csv /tmp/data/ratings.csv
+RUN mkdir /tmp/export
+ADD model.py /opt/model.py
+RUN chmod +x /opt/model.py
+
+ENTRYPOINT ["/usr/bin/python"]
+CMD ["/opt/model.py"]
